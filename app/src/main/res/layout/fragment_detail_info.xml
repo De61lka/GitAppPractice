@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/repository_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Repository Name"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/repository_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Repository Description"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/repository_forks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Forks: "
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/repository_stars"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stars: "
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/repository_watchers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Watchers: "
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/repository_license"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="License: "
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/repository_readme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Readme"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/repository_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Repository URL"
+        android:textSize="16sp"
+        android:autoLink="web" />
+</LinearLayout>

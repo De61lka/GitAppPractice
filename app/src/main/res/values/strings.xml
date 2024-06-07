@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GitApp</string>
+    <string name="auth_token">GitHub Token</string>
+</resources>
