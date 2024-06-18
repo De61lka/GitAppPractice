@@ -41,10 +41,15 @@ class AuthFragment : Fragment() {
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit()
+
+                // Загрузить репозитории
+                authViewModel.loadRepositories()
             } else {
                 Toast.makeText(context, "Authentication failed", Toast.LENGTH_SHORT).show()
             }
         })
+
+
 
         return view
     }

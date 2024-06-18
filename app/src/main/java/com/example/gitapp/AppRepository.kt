@@ -17,10 +17,24 @@ class AppRepository(context: Context) {
         return keyValueStorage.getData("auth_token")
     }
 
+    private fun getApi(): GitHubApi? {
+        if (api == null) {
+            val token = getAuthToken()
+            if (token != null) {
+                api = RetrofitClient.getClient(token).create(GitHubApi::class.java)
+            }
+        }
+        return api
+    }
+
     suspend fun getRepositories(): List<Repository>? {
         return try {
-            val repos = api?.getRepositories()
-            Log.d("AppRepository", "Repositories fetched: ${repos?.size}")
+            val repos = getApi()?.getRepositories()
+            if (repos != null) {
+                Log.d("AppRepository", "Repositories fetched: ${repos.size}")
+            } else {
+                Log.d("AppRepository", "Repositories fetched: null")
+            }
             repos
         } catch (e: Exception) {
             Log.e("AppRepository", "Error fetching repositories", e)
@@ -30,9 +44,15 @@ class AppRepository(context: Context) {
 
     suspend fun getRepositoryDetails(owner: String, repo: String): RepositoryDetails? {
         return try {
-            val details = api?.getRepositoryDetails(owner, repo)
-            Log.d("AppRepository", "Repository details response: ${details.toString()}")
-            details
+            val url = "https://api.github.com/repos/$owner/$repo"
+            Log.d("AppRepository", "Fetching repository details from URL: $url")
+            val response = getApi()?.getRepositoryDetails(owner, repo)
+            if (response != null) {
+                Log.d("AppRepository", "Repository details response: ${response.toString()}")
+            } else {
+                Log.d("AppRepository", "Repository details response is null")
+            }
+            response
         } catch (e: Exception) {
             Log.e("AppRepository", "Error fetching repository details", e)
             null
@@ -41,7 +61,7 @@ class AppRepository(context: Context) {
 
     suspend fun getReadme(owner: String, repo: String): Readme? {
         return try {
-            val readme = api?.getReadme(owner, repo)
+            val readme = getApi()?.getReadme(owner, repo)
             Log.d("AppRepository", "Readme response: ${readme.toString()}")
             readme
         } catch (e: Exception) {

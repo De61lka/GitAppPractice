@@ -1,6 +1,7 @@
 package com.example.gitapp
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,12 +17,17 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun authenticate(token: String) {
         viewModelScope.launch {
             repository.saveAuthToken(token)
-            val repositories = repository.getRepositories()
-            _authenticationState.value = repositories != null
+            _authenticationState.value = true
         }
     }
 
     fun getAuthToken(): String? {
         return repository.getAuthToken()
+    }
+
+    fun loadRepositories() {
+        viewModelScope.launch {
+            repository.getRepositories()
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.gitapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,59 +43,23 @@ class RepositoriesListFragment : Fragment() {
         recyclerView.adapter = adapter
 
         repositoriesListViewModel.repositories.observe(viewLifecycleOwner, { repositories ->
-            if (repositories != null) {
+            Log.d("RepositoriesListFragment", "Repositories observed: $repositories")
+            if (repositories != null && repositories.isNotEmpty()) {
+                Log.d("RepositoriesListFragment", "Repositories loaded: ${repositories.size}")
                 adapter.updateRepos(repositories)
             } else {
+                Log.d("RepositoriesListFragment", "No repositories found")
                 Toast.makeText(context, "No repositories found", Toast.LENGTH_SHORT).show()
             }
         })
 
         val token = arguments?.getString("token")
         token?.let {
-            fetchRepos(it)
+            repositoriesListViewModel.fetchRepositories()
         } ?: run {
             Toast.makeText(context, "Token not found", Toast.LENGTH_SHORT).show()
         }
 
         return view
-    }
-
-    private fun fetchRepos(token: String) {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("https://api.github.com/user/repos?per_page=10&sort=updated&direction=desc")
-            .header("Authorization", "Bearer $token")
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                activity?.runOnUiThread {
-                    Toast.makeText(context, "Failed to fetch repos", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val jsonResponse = response.body?.string()
-                    val repos = Gson().fromJson(jsonResponse, Array<Repository>::class.java).toList()
-                    activity?.runOnUiThread {
-                        updateRepoList(repos)
-                    }
-                } else {
-                    activity?.runOnUiThread {
-                        Toast.makeText(context, "No repos found", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        })
-    }
-
-    private fun updateRepoList(repos: List<Repository>) {
-        if (repos.isNotEmpty()) {
-            adapter.updateRepos(repos)
-            adapter.notifyDataSetChanged()
-        } else {
-            Toast.makeText(context, "No repos found", Toast.LENGTH_SHORT).show()
-        }
     }
 }

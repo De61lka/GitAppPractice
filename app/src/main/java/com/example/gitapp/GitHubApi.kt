@@ -6,7 +6,12 @@ import retrofit2.http.Query
 
 interface GitHubApi {
     @GET("user/repos")
-    suspend fun getRepositories(@Query("per_page") perPage: Int = 10): List<Repository>
+    suspend fun getRepositories(
+        @Query("per_page") perPage: Int = 10,
+        @Query("sort") sort: String = "updated",
+        @Query("direction") direction: String = "desc",
+        @Query("affiliation") affiliation: String = "owner"
+    ): List<Repository>
 
     @GET("repos/{owner}/{repo}")
     suspend fun getRepositoryDetails(

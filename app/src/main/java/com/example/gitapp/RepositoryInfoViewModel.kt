@@ -1,12 +1,14 @@
 package com.example.gitapp
 
 import android.app.Application
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import java.nio.charset.StandardCharsets
 
 class RepositoryInfoViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: AppRepository = AppRepository(application)
@@ -33,6 +35,11 @@ class RepositoryInfoViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    fun decodeBase64(base64: String): String {
+        val decodedBytes = Base64.decode(base64, Base64.DEFAULT)
+        return String(decodedBytes, StandardCharsets.UTF_8)
+    }
+
     fun loadReadme(owner: String, repo: String) {
         viewModelScope.launch {
             try {
@@ -40,7 +47,8 @@ class RepositoryInfoViewModel(application: Application) : AndroidViewModel(appli
                 val readme = repository.getReadme(owner, repo)
                 if (readme != null) {
                     Log.d("RepositoryInfoViewModel", "Readme successfully loaded: ${readme.toString()}")
-                    _readme.value = readme
+                    val decodedContent = decodeBase64(readme.content)
+                    _readme.value = Readme(decodedContent)
                 } else {
                     Log.d("RepositoryInfoViewModel", "Readme is null")
                 }
